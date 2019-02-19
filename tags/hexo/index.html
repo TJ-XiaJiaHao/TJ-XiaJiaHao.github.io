@@ -46,11 +46,7 @@
           
       
           
-            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
-          
-      
-          
-            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
           
       
   </ul>
@@ -76,10 +72,10 @@
     </div>
   
 </div>
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
     </div>
 
     
-
   </div>
   <footer class="footer text-center">
     <div id="bottom-inner">
@@ -220,4 +216,15 @@
 
 
 </body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
 </html>
