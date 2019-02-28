@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Javascript,增量检查,">
+  
+
+  
+    <meta name="description" content="Javascript代码检查那点事">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>Javascript代码检查那点事 [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Javascript代码检查那点事
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-02-28T06:57:08.000Z">
+        2019-02-28
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/增量检查/">增量检查</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <p>一时不做规范一时爽，一直不做规范一直爽。</p>
+<p>阿呸，代码规范这事，可小可大，如果一个项目长期没有规范检查，那么随着参与人数和代码量的增加，就会存在很多的潜在地雷，随时可能爆炸！</p>
+<p>本文将介绍如何安装和使用 <code>EditorConfig</code>、 <code>eslint</code> 、 <code>eslint staged</code>，从而实现 <code>Javascript</code> 代码的增量检查。<br><a id="more"></a></p>
+<h3 id="一统代码风格-EditorConfig"><a href="#一统代码风格-EditorConfig" class="headerlink" title="一统代码风格 - EditorConfig"></a>一统代码风格 - EditorConfig</h3><h4 id="代码规范，从本地开始"><a href="#代码规范，从本地开始" class="headerlink" title="代码规范，从本地开始"></a>代码规范，从本地开始</h4><p>在这里必须介绍一款神器：<code>EditorConfig</code>，它可以帮助开发人员在不同编辑器和IDE中定义和维护一致的代码风格。该神器的精华全在一个叫做 <code>.editorconfig</code> 的文件中，我们来看一下一个典型的<code>.editorconfig</code>文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当打开一个文件时，EditorConfig插件会在打开文件的目录</span></span><br><span class="line"><span class="comment">// 和其每一级父目录查找.editorconfig文件，直到有一个配置文件root=true</span></span><br><span class="line">root = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">[*]</span><br><span class="line">charset = utf<span class="number">-8</span> <span class="comment">// 定义编码格式</span></span><br><span class="line">indent_style = space <span class="comment">// 定义缩进类型为空格而不是tab</span></span><br><span class="line">indent_size = <span class="number">4</span> <span class="comment">// 定义缩进为4个空格</span></span><br><span class="line">end_of_line = lf <span class="comment">// 定义行尾转行字符类型</span></span><br><span class="line">insert_final_newline = <span class="literal">true</span> <span class="comment">// 文件保存时自动在末尾添加一行空行</span></span><br><span class="line">trim_trailing_whitespace = <span class="literal">true</span> <span class="comment">// 自动删除行尾空格</span></span><br></pre></td></tr></table></figure>
+<p>浅显易懂有木有？且<code>.editorconfig</code> 的配置优先级将高于编辑器本身的配置，所以只要在项目根目录下创建该文件，那么就可以保证代码风格的一致性！</p>
+<p>那么问题来了，只要手动创建该文件就运行了嘛？答案当然是不！像 <code>webstorm</code> 已经默认支持了 <code>editorconfig</code>， 但是像 <code>sublime</code> 则需要安装额外的插件。</p>
+<h4 id="在-Sublime-中安装-Editorconfig"><a href="#在-Sublime-中安装-Editorconfig" class="headerlink" title="在 Sublime 中安装 Editorconfig"></a>在 <code>Sublime</code> 中安装 <code>Editorconfig</code></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Mac</span></span><br><span class="line"><span class="number">1.</span> 打开package control：subline text -&gt; preferences -&gt; package control</span><br><span class="line"><span class="number">2.</span> 打开install pakage：输入pacakge control:intall packages</span><br><span class="line"><span class="number">3.</span> 安装插件：输入editor config双击安装插件</span><br><span class="line"><span class="number">4.</span> 使用：在项目根目录中添加一个.editorconfig文件，在文件中添加代码规则</span><br></pre></td></tr></table></figure>
+<p>那么问题又来了，虽然你本地做了代码风格统一，但你不能保证每一个参与者的编辑器都支持 <code>EditorConfig</code>，难道每加入一个开发者你都要去喊他安装 <code>EditorConfig</code> 嘛？答案当然是可以的，不过最好还是做一层兜底！所以就需要用到 <code>eslint</code> 来做代码检查！</p>
+<h3 id="代码全量检查-ESLint"><a href="#代码全量检查-ESLint" class="headerlink" title="代码全量检查 - ESLint"></a>代码全量检查 - ESLint</h3><h4 id="什么是ESLint"><a href="#什么是ESLint" class="headerlink" title="什么是ESLint"></a>什么是ESLint</h4><blockquote>
+<p>ESLint是一个插件化的JS代码检测工具，可以用于检查常见的JS代码错误，也可以进行代码风格检查，通过ESLint配置，可以辅助编码规范的执行，有效控制项目代码的质量。</p>
+</blockquote>
+<h4 id="为什么要用ESLint"><a href="#为什么要用ESLint" class="headerlink" title="为什么要用ESLint"></a>为什么要用ESLint</h4><blockquote>
+<p>JS是非常灵活的弱类型语言，如果不进行约束，可能在某个特定的时候就爆出了<code>xxx is undefined</code>的错误而导致程序崩溃，所以需要辅助工具来帮助我们检查代码。</p>
+</blockquote>
+<h4 id="ESLint的优势与劣势"><a href="#ESLint的优势与劣势" class="headerlink" title="ESLint的优势与劣势"></a>ESLint的优势与劣势</h4><blockquote>
+<p>较早的代码检测插件如JSHint和JSCS，无法检测React JSX的语法，虽然衍生出了JSXHint等，但是并不是以插件的形式出现，而是重新包装了一个工具。<br>但是JSHint的速度要比ESLint更快。</p>
+</blockquote>
+<h4 id="ESLint的特点"><a href="#ESLint的特点" class="headerlink" title="ESLint的特点"></a>ESLint的特点</h4><blockquote>
+<ol>
+<li>默认规则包含了JSHint和JSLint的规则。</li>
+<li>规则可配置性高：可设置警告、错误两个error等级。</li>
+<li>包含代码风格检测的规则（可以丢掉JSCS了）</li>
+<li>支持插件拓展、自定义规则。</li>
+</ol>
+</blockquote>
+<h4 id="开干！完成代码自动检查！"><a href="#开干！完成代码自动检查！" class="headerlink" title="开干！完成代码自动检查！"></a>开干！完成代码自动检查！</h4><p>安装 <code>eslint</code> 和 <code>pre-commit</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev eslint</span><br><span class="line">npm install --save-dev pre-commit</span><br></pre></td></tr></table></figure>
+<p>在 <code>package.json</code> 中配置 <code>eslint</code> 检查和 <code>pre-commit</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;lint&quot;: &quot;eslint --ext js,vue [需要检查的目录] --cache&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;pre-commit&quot;: [</span><br><span class="line">  &quot;lint&quot;</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+<p>创建 <code>eslint</code> 检查规则：在项目根目录下创建 <code>.eslintrc.js</code> 文件，下面为一份配置 <code>Demo</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 项目说明：该项目是基于Vue2.0的项目</span></span><br><span class="line"><span class="comment">// 在'plugin:vue/essential'和'airbnb-base'风格的基础上关闭了一些规则检查</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  root: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">"extends"</span>: [<span class="string">'plugin:vue/essential'</span>, <span class="string">'airbnb-base'</span>],</span><br><span class="line">  <span class="string">"globals"</span>: &#123;  <span class="comment">// 定义了可以使用的全局对象</span></span><br><span class="line">    <span class="string">"Vue"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"VueRouter"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"plugins"</span>: [<span class="string">"vue"</span>],</span><br><span class="line">  <span class="string">"env"</span>: &#123;</span><br><span class="line">      <span class="string">"browser"</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="string">"node"</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="string">"es6"</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"parserOptions"</span>: &#123;</span><br><span class="line">    <span class="string">"parser"</span>: <span class="string">"babel-eslint"</span>,</span><br><span class="line">    <span class="string">"sourceType"</span>: <span class="string">"module"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"rules"</span>: &#123;</span><br><span class="line">    <span class="string">"func-names"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"global-require"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"linebreak-style"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"indent"</span>: [<span class="string">"error"</span>, <span class="number">2</span>, &#123; <span class="string">"SwitchCase"</span>: <span class="number">1</span> &#125;],</span><br><span class="line">    <span class="string">"import/extensions"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"import/first"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"import/no-extraneous-dependencies"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"import/no-unresolved"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"import/prefer-default-export"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-mixed-operators"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-new"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-param-reassign"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-plusplus"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-return-assign"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"vars-on-top"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"import/no-dynamic-require"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-restricted-syntax"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-underscore-dangle"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"semi"</span>: [<span class="number">2</span>, <span class="string">"never"</span>],</span><br><span class="line">    <span class="string">"no-use-before-define"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"consistent-return"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-else-return"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-shadow"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-useless-escape"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-restricted-globals"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"operator-linebreak"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-multi-assign"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"prefer-destructuring"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"lines-between-class-members"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"prefer-template"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"camelcase"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"prefer-rest-params"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-unused-expressions"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-confusing-arrow"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-prototype-builtins"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"arrow-body-style"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"prefer-promise-reject-errors"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"arrow-parens"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"object-curly-newline"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"max-len"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-nested-ternary"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"newline-per-chained-call"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"no-new-func"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"prefer-spread"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"quotes"</span>: [<span class="number">2</span>, <span class="string">"single"</span>, &#123; <span class="string">"allowTemplateLiterals"</span>: <span class="literal">true</span> &#125;],</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* for vue */</span></span><br><span class="line">    <span class="string">"valid-v-bind"</span>: <span class="string">"off"</span>,</span><br><span class="line">    <span class="string">"v-bind-style"</span>: <span class="string">"off"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看效果：如果是一个老项目，你可能会看到上千个报红！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run lint</span><br></pre></td></tr></table></figure></p>
+<p>恭喜你，到此为止你每一次提交代码时都会自动完成一次全量检查！没错，是全量！对于老项目或者是比较大的项目，这是不合理的，所以需要优化为增量检查。</p>
+<h3 id="增量检查，GO！-Lint-Staged"><a href="#增量检查，GO！-Lint-Staged" class="headerlink" title="增量检查，GO！- Lint Staged"></a>增量检查，GO！- Lint Staged</h3><blockquote>
+<p>检测所有文件很慢且有的结果是无关紧要的，你更改关心的是本次改动的内容。这就是lint-staged的用处。</p>
+</blockquote>
+<p>安装 <code>lint-staged</code> 和 <code>husky</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev lint-staged husky</span><br></pre></td></tr></table></figure>
+<p>把之前全量检查在 <code>package.json</code> 中添加的内容全部删除，在 <code>package.json</code> 中添加如下内容</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只检查本次提交（add）的</span></span><br><span class="line"><span class="comment">// husky 会在commit时自动执行 precommit 命令</span></span><br><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"precommit"</span>: <span class="string">"lint-staged"</span></span><br><span class="line">&#125;,</span><br><span class="line"><span class="string">"lint-staged"</span>: &#123;</span><br><span class="line">  <span class="string">"*.js"</span>: [</span><br><span class="line">    <span class="string">"eslint"</span>,</span><br><span class="line">    <span class="string">"git add"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"*.vue"</span>: [</span><br><span class="line">    <span class="string">"eslint"</span>,</span><br><span class="line">    <span class="string">"git add"</span></span><br><span class="line">  ]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>完美，到此就完成了代码的增量检查！</p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一统代码风格-EditorConfig"><span class="toc-text">一统代码风格 - EditorConfig</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#代码规范，从本地开始"><span class="toc-text">代码规范，从本地开始</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在-Sublime-中安装-Editorconfig"><span class="toc-text">在 Sublime 中安装 Editorconfig</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码全量检查-ESLint"><span class="toc-text">代码全量检查 - ESLint</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#什么是ESLint"><span class="toc-text">什么是ESLint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么要用ESLint"><span class="toc-text">为什么要用ESLint</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ESLint的优势与劣势"><span class="toc-text">ESLint的优势与劣势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ESLint的特点"><span class="toc-text">ESLint的特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#开干！完成代码自动检查！"><span class="toc-text">开干！完成代码自动检查！</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增量检查，GO！-Lint-Staged"><span class="toc-text">增量检查，GO！- Lint Staged</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/02/28/Oh-my-zsh/" rel="next" title="Oh-my-zsh">
+          Oh-my-zsh
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+    </div>
+
+    
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>
