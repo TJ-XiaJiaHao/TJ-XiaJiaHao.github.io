@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Github,hooks,Github钩子,">
+  
+
+  
+    <meta name="description" content="Pre Commit">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>Pre Commit [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Pre Commit
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-03-01T08:06:28.000Z">
+        2019-03-01
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Github/">Github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Github钩子/">Github钩子</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hooks/">hooks</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <p>最终效果：每次提交代码时，自动完成以下两个功能</p>
+<ol>
+<li><p>执行代码增量检查，有代码风格错误抛出异常。</p>
+</li>
+<li><p>检查提交的文件列表，如果同时存在 <code>dist</code> 目录和非 <code>dist</code> 目录，抛出异常。</p>
+</li>
+</ol>
+<a id="more"></a>
+<h3 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h3><p>在阅读本文之前，请确保熟悉或了解 <code>eslint</code>、 <code>eslint-staged</code> 和 <code>husky</code>.</p>
+<blockquote>
+<p>如果不了解，请点击传送门：<a href="https://tj-xiajiahao.github.io/2019/02/28/Javascript%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%82%A3%E7%82%B9%E4%BA%8B/" target="_blank" rel="noopener">Javascript代码检查那点事</a></p>
+</blockquote>
+<h3 id="代码增量检查"><a href="#代码增量检查" class="headerlink" title="代码增量检查"></a>代码增量检查</h3><blockquote>
+<p>eslint 的具体配置不再赘述，在上述的传送门中有详细配置。</p>
+</blockquote>
+<p>安装相关依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev husky</span><br><span class="line">npm install --save-dev lint-staged</span><br></pre></td></tr></table></figure></p>
+<p>在 <code>package.json</code> 中增加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&quot;husky&quot;: &#123;</span><br><span class="line">  &quot;hooks&quot;: &#123;</span><br><span class="line">    &quot;pre-commit&quot;: &quot;node scripts/utils/pre-commit.js&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;lint-staged&quot;: &#123;</span><br><span class="line">  &quot;linters&quot;: &#123;</span><br><span class="line">    &quot;*.js&quot;: [</span><br><span class="line">      &quot;eslint&quot;,</span><br><span class="line">      &quot;git add&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;*.vue&quot;: [</span><br><span class="line">      &quot;eslint&quot;,</span><br><span class="line">      &quot;git add&quot;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;ignore&quot;: [&quot;dist/**&quot;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>配置说明：当执行 <code>git commit</code> 时，会执行 <code>husky.hooks.pre-commit</code>, 也就是 <code>node scripts/utils/pre-commit.js</code>，该命令为执行一段脚本，脚本如下。</p>
+<h3 id="提交文件检查"><a href="#提交文件检查" class="headerlink" title="提交文件检查"></a>提交文件检查</h3><blockquote>
+<p>检查提交内容的核心思路为：获取本次提交的改动文件列表信息 -&gt; 检查文件路径 -&gt; 判断是否同时存在 <code>dist</code> 和非 <code>dist</code>目录，如果同时存在，则抛出异常停止 <code>commit</code> 操作，如果不存在，则执行 <code>eslint</code> 代码检查。详细代码如下（可直接拷贝到 <code>scripts/utils/pre-commit.js</code> 中）</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> chalk = <span class="built_in">require</span>(<span class="string">'chalk'</span>)</span><br><span class="line"><span class="keyword">const</span> symbols = <span class="built_in">require</span>(<span class="string">'log-symbols'</span>)</span><br><span class="line"><span class="keyword">const</span> spawn = <span class="built_in">require</span>(<span class="string">'child_process'</span>).spawn</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查改动的文件目录</span></span><br><span class="line">getDiffFiles().then(<span class="function"><span class="params">files</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> filePaths = files.map(<span class="function"><span class="params">file</span> =&gt;</span> file.filename.split(<span class="string">'/'</span>)[<span class="number">0</span>])</span><br><span class="line">  <span class="keyword">let</span> isDistFolder = <span class="literal">false</span></span><br><span class="line">  <span class="keyword">let</span> isOtherFiles = <span class="literal">false</span></span><br><span class="line">  filePaths.forEach(<span class="function"><span class="params">path</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (path === <span class="string">'dist'</span>) isDistFolder = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span> isOtherFiles = <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">if</span> (isDistFolder &amp;&amp; isOtherFiles) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>()</span><br><span class="line">  &#125;</span><br><span class="line">  runCmd(<span class="string">'lint-staged'</span>)</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// eslint-disable-next-line</span></span><br><span class="line">  <span class="built_in">console</span>.error(<span class="string">`\n\n<span class="subst">$&#123;symbols.error&#125;</span> <span class="subst">$&#123;chalk.redBright(<span class="string">'Ops！Dist folder and other files cannot be submitted at the same time.'</span>)&#125;</span>\n`</span>)</span><br><span class="line">  process.exit(<span class="number">1</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取本次改动的文件列表</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getDiffFiles</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> getHeadCommitId().then(<span class="function"><span class="params">head</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (head) &#123;</span><br><span class="line">      <span class="keyword">const</span> command = <span class="string">'git -c core.quotepath=false diff-index --cached --name-status -M --diff-filter=ACM '</span> + head</span><br><span class="line">      <span class="keyword">return</span> runCmd(command).then(<span class="function">(<span class="params">&#123; err, stdout, stderr &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> err || stderr ? err || <span class="keyword">new</span> <span class="built_in">Error</span>(stderr) : stdoutToResultsObject(stdout)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取最近一次提交的commit_id</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getHeadCommitId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> runCmd(<span class="string">'git rev-parse --verify HEAD'</span>).then(<span class="function">(<span class="params">&#123; err, stdout, stderr &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err &amp;&amp; err.message.indexOf(<span class="string">'fatal: Needed a single revision'</span>) !== <span class="number">-1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> getFirstCommitId()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> err || stderr ? err || <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'STDERR: '</span> + stderr) : stdout.replace(<span class="string">'\n'</span>, <span class="string">''</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取第一次提交的commit_id</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFirstCommitId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> runCmd(<span class="string">'git hash-object -t tree /dev/null'</span>).then(<span class="function">(<span class="params">&#123; err, stdout, stderr &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> err || stderr ? err || <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'STDERR: '</span> + stderr) : stdout.replace(<span class="string">'\n'</span>, <span class="string">''</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 执行命令，监听控制台信息</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">runCmd</span>(<span class="params">command</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 解析命令获取参数</span></span><br><span class="line">    <span class="keyword">const</span> bits = command.split(<span class="string">' '</span>)</span><br><span class="line">    <span class="keyword">const</span> args = bits.slice(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行命令</span></span><br><span class="line">    <span class="keyword">const</span> cmd = spawn(bits[<span class="number">0</span>], args, &#123; <span class="attr">cwd</span>: process.cwd() &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> stdout = <span class="string">''</span></span><br><span class="line">    <span class="keyword">let</span> stderr = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">    cmd.stdout.on(<span class="string">'data'</span>, data =&gt; &#123;</span><br><span class="line">      stdout += data.toString()</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    cmd.stderr.on(<span class="string">'data'</span>, data =&gt; &#123;</span><br><span class="line">      stderr += data.toString()</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    cmd.on(<span class="string">'close'</span>, code =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> err = code !== <span class="number">0</span> ? <span class="keyword">new</span> <span class="built_in">Error</span>(stderr) : <span class="literal">null</span></span><br><span class="line">      resolve(&#123; err, stdout, stderr &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把stdout输出信息转化成Object对象</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stdoutToResultsObject</span>(<span class="params">stdout</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">const</span> lines = stdout.split(<span class="string">'\n'</span>)</span><br><span class="line">  <span class="keyword">let</span> iLines = lines.length</span><br><span class="line">  <span class="keyword">while</span> (iLines--) &#123;</span><br><span class="line">    <span class="keyword">const</span> line = lines[iLines]</span><br><span class="line">    <span class="keyword">if</span> (line !== <span class="string">''</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> parts = line.split(<span class="string">'\t'</span>)</span><br><span class="line">      <span class="keyword">const</span> result = &#123;</span><br><span class="line">        filename: parts[<span class="number">2</span>] || parts[<span class="number">1</span>],</span><br><span class="line">        status: codeToStatus(parts[<span class="number">0</span>]),</span><br><span class="line">      &#125;</span><br><span class="line">      results.push(result)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// git 枚举映射</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">codeToStatus</span>(<span class="params">code</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> map = &#123;</span><br><span class="line">    A: <span class="string">'Added'</span>,</span><br><span class="line">    C: <span class="string">'Copied'</span>,</span><br><span class="line">    D: <span class="string">'Deleted'</span>,</span><br><span class="line">    M: <span class="string">'Modified'</span>,</span><br><span class="line">    R: <span class="string">'Renamed'</span>,</span><br><span class="line">    T: <span class="string">'Type-Change'</span>,</span><br><span class="line">    U: <span class="string">'Unmerged'</span>,</span><br><span class="line">    X: <span class="string">'Unknown'</span>,</span><br><span class="line">    B: <span class="string">'Broken'</span>,</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> map[code.charAt(<span class="number">0</span>)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当执行 <code>git commit</code> 操作时，首先会执行上述脚本，当满足要求时，再执行 <code>eslint</code> 代码检查，当代码检查通过后，才会提交代码到远程仓库！</p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前期准备"><span class="toc-text">前期准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码增量检查"><span class="toc-text">代码增量检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交文件检查"><span class="toc-text">提交文件检查</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/02/28/Javascript代码检查那点事/" rel="next" title="Javascript代码检查那点事">
+          Javascript代码检查那点事
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+    </div>
+
+    
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>

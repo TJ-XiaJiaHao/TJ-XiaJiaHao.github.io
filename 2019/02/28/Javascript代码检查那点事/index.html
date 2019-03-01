@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="Javascript,增量检查,">
+    <meta name="keywords" content="Javascript,增量检查,eslint,eslint-staged,">
   
 
   
@@ -72,7 +72,7 @@
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/增量检查/">增量检查</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eslint/">eslint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eslint-staged/">eslint-staged</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/增量检查/">增量检查</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
@@ -83,9 +83,9 @@
     </header>
 
     <div class="post-content">
-      <p>一时不做规范一时爽，一直不做规范一直爽。</p>
-<p>阿呸，代码规范这事，可小可大，如果一个项目长期没有规范检查，那么随着参与人数和代码量的增加，就会存在很多的潜在地雷，随时可能爆炸！</p>
-<p>本文将介绍如何安装和使用 <code>EditorConfig</code>、 <code>eslint</code> 、 <code>eslint staged</code>，从而实现 <code>Javascript</code> 代码的增量检查。<br><a id="more"></a></p>
+      <blockquote>
+<p>一时不做规范一时爽，一直不做规范一直爽。阿呸，代码规范这事，可小可大，如果一个项目长期没有规范检查，那么随着参与人数和代码量的增加，就会存在很多的潜在地雷，随时可能爆炸！本文将介绍如何安装和使用 <code>EditorConfig</code>、 <code>eslint</code> 、 <code>eslint staged</code>，从而实现 <code>Javascript</code> 代码的增量检查。<br><a id="more"></a></p>
+</blockquote>
 <h3 id="一统代码风格-EditorConfig"><a href="#一统代码风格-EditorConfig" class="headerlink" title="一统代码风格 - EditorConfig"></a>一统代码风格 - EditorConfig</h3><h4 id="代码规范，从本地开始"><a href="#代码规范，从本地开始" class="headerlink" title="代码规范，从本地开始"></a>代码规范，从本地开始</h4><p>在这里必须介绍一款神器：<code>EditorConfig</code>，它可以帮助开发人员在不同编辑器和IDE中定义和维护一致的代码风格。该神器的精华全在一个叫做 <code>.editorconfig</code> 的文件中，我们来看一下一个典型的<code>.editorconfig</code>文件。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当打开一个文件时，EditorConfig插件会在打开文件的目录</span></span><br><span class="line"><span class="comment">// 和其每一级父目录查找.editorconfig文件，直到有一个配置文件root=true</span></span><br><span class="line">root = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">[*]</span><br><span class="line">charset = utf<span class="number">-8</span> <span class="comment">// 定义编码格式</span></span><br><span class="line">indent_style = space <span class="comment">// 定义缩进类型为空格而不是tab</span></span><br><span class="line">indent_size = <span class="number">4</span> <span class="comment">// 定义缩进为4个空格</span></span><br><span class="line">end_of_line = lf <span class="comment">// 定义行尾转行字符类型</span></span><br><span class="line">insert_final_newline = <span class="literal">true</span> <span class="comment">// 文件保存时自动在末尾添加一行空行</span></span><br><span class="line">trim_trailing_whitespace = <span class="literal">true</span> <span class="comment">// 自动删除行尾空格</span></span><br></pre></td></tr></table></figure>
 <p>浅显易懂有木有？且<code>.editorconfig</code> 的配置优先级将高于编辑器本身的配置，所以只要在项目根目录下创建该文件，那么就可以保证代码风格的一致性！</p>
@@ -165,6 +165,11 @@
   
       <div class="post-nav-item post-nav-prev">
           
+          <a href="/2019/03/01/Pre-Commit/" rel="prev" title="Pre Commit">
+            Pre Commit
+          </a>
+          <span>〉</span>
+        
       </div>
     </div>
   
