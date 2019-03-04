@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Pub/Sub,微信小程序，状态管理,">
+  
+
+  
+    <meta name="description" content="微信小程序中实现状态管理">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>微信小程序中实现状态管理 [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        微信小程序中实现状态管理
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-03-04T02:06:01.000Z">
+        2019-03-04
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pub-Sub/">Pub/Sub</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微信小程序，状态管理/">微信小程序，状态管理</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <blockquote>
+<p>出发点：之前起点小程序尝试mpvue的一个重要原因就是mpvue支持状态管理，虽然现在wepy也支持了redux，但是其性能不是非常理想，且看到issue里面还是提了很多的bug，所以还是想着用原生来撸一个简单够用的。<br><a id="more"></a></p>
+</blockquote>
+<h3 id="Pub-Sub模式（发布-订阅模式）"><a href="#Pub-Sub模式（发布-订阅模式）" class="headerlink" title="Pub/Sub模式（发布/订阅模式）"></a>Pub/Sub模式（发布/订阅模式）</h3><p>状态管理中非常重要的点就是发布/订阅模式，发布/订阅模式的原理非常简单，一边发布，一边订阅。订阅者在事件中心注册具名事件和回调函数，发布者通知事件中心执行所有同名的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">订阅者 ---- 注册事件 ----&gt; 事件中心 &lt;---- 通知 ---- 订阅者</span><br></pre></td></tr></table></figure>
+<h4 id="事件中心（pubsub-js）"><a href="#事件中心（pubsub-js）" class="headerlink" title="事件中心（pubsub.js）"></a>事件中心（pubsub.js）</h4><p>既然需要提供事件注册（订阅）的功能，那么必然需要一个地方来存放所有的事件，同一个事件名可以有多个回调，那么显然数据结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &apos;fn_name&apos;: [fn1, fn2, fn3...],</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以事件中心的雏型如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">PubSub</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">// events里存放的是所有的具名事件</span></span><br><span class="line">    <span class="keyword">this</span>.events = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//  提供订阅功能</span></span><br><span class="line">  subscribe(event, callback) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 提供发布功能</span></span><br><span class="line">  publish(event, data) &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>订阅功能：在具名事件的回调数组中推入了一个新的回调，接受一个事件名和回调函数。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">subscribe(event, callback) &#123;</span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(!self.events.hasOwnProperty(event)) &#123;</span><br><span class="line">    self.events[event] = [];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 没有做去重</span></span><br><span class="line">  <span class="keyword">return</span> self.events[event].push(callback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>发布功能：调用对应事件名的所有回调函数，参数为事件名和回调参数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">publish(event, data = &#123;&#125;) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(!self.events.hasOwnProperty(event)) &#123;</span><br><span class="line">    <span class="keyword">return</span> [];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> self.events[event].map(<span class="function"><span class="params">callback</span> =&gt;</span> callback(data));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Store对象（store-js）"><a href="#Store对象（store-js）" class="headerlink" title="Store对象（store.js）"></a>Store对象（store.js）</h3><p>该对象主要用于存储共享数据，当数据被更新时触发 <code>stageChange</code> 事件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> PubSub <span class="keyword">from</span> <span class="string">'../lib/pubsub.js'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Store</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(params) &#123;</span><br><span class="line">    <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line">    self.actions = &#123;&#125;; <span class="comment">// 存储异步方法</span></span><br><span class="line">    self.mutations = &#123;&#125;; <span class="comment">// 存储同步方法</span></span><br><span class="line">    self.state = &#123;&#125;; <span class="comment">// 共享数据</span></span><br><span class="line">    self.status = <span class="string">'resting'</span>;    <span class="comment">// 防止手动更新</span></span><br><span class="line">    self.events = <span class="keyword">new</span> PubSub();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数可以传入初始的actions和mutations</span></span><br><span class="line">    <span class="keyword">if</span>(params.hasOwnProperty(<span class="string">'actions'</span>)) &#123;</span><br><span class="line">      self.actions = params.actions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(params.hasOwnProperty(<span class="string">'mutations'</span>)) &#123;</span><br><span class="line">      self.mutations = params.mutations;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Proxy：es6的方法，起到拦截的作用</span></span><br><span class="line">    self.state = <span class="keyword">new</span> <span class="built_in">Proxy</span>((params.state || &#123;&#125;), &#123;</span><br><span class="line">      <span class="keyword">set</span>: function(state, key, value) &#123;</span><br><span class="line"></span><br><span class="line">        state[key] = value;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`stateChange: <span class="subst">$&#123;key&#125;</span>: <span class="subst">$&#123;value&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        self.events.publish(<span class="string">'stateChange'</span>, self.state);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 防止手动更新</span></span><br><span class="line">        <span class="keyword">if</span>(self.status !== <span class="string">'mutation'</span>) &#123;</span><br><span class="line">          <span class="built_in">console</span>.warn(<span class="string">`You should use a mutation to set <span class="subst">$&#123;key&#125;</span>`</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        self.status = <span class="string">'resting'</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dispatch(actionKey, payload) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">  commit(mutaionKey, payload) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dispatch：调用 <code>actions</code>，可以执行一些异步的操作，然后调用commit<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">dispatch(actionKey, payload) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> self.actions[actionKey] !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">`Action "<span class="subst">$&#123;actionKey&#125;</span> doesn't exist.`</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.groupCollapsed(<span class="string">`ACTION: <span class="subst">$&#123;actionKey&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">  self.status = <span class="string">'action'</span>;</span><br><span class="line"></span><br><span class="line">  self.actions[actionKey](self, payload);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.groupEnd();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>commit：调用mutations<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">commit(mutationKey, payload) &#123;</span><br><span class="line">    <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> self.mutations[mutationKey] !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`Mutation "<span class="subst">$&#123;mutationKey&#125;</span>" doesn't exist`</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    self.status = <span class="string">'mutation'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> newState = self.mutations[mutationKey](self.state, payload);</span><br><span class="line"></span><br><span class="line">    self.state = <span class="built_in">Object</span>.assign(self.state, newState);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="案例（状态管理的应用）"><a href="#案例（状态管理的应用）" class="headerlink" title="案例（状态管理的应用）"></a>案例（状态管理的应用）</h3><p>需求说明：在首页将一本书加入书架，书架列表自动更新。</p>
+<p><code>store/state.js</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    bookList: [],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>store/mutation.js</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  addBook(state, payload) &#123;</span><br><span class="line">    state.bookList.push(payload);</span><br><span class="line">    <span class="keyword">return</span> state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>store/action.js</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    addBook(context, payload) &#123;</span><br><span class="line">      context.commit(<span class="string">'addBook'</span>, payload);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>store/index.js</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> actions <span class="keyword">from</span> <span class="string">'./actions.js'</span>;</span><br><span class="line"><span class="keyword">import</span> mutations <span class="keyword">from</span> <span class="string">'./mutations.js'</span>;</span><br><span class="line"><span class="keyword">import</span> state <span class="keyword">from</span> <span class="string">'./state.js'</span>;</span><br><span class="line"><span class="keyword">import</span> Store <span class="keyword">from</span> <span class="string">'./store.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> Store(&#123;</span><br><span class="line">    actions,</span><br><span class="line">    mutations,</span><br><span class="line">    state</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>订阅（书架页）<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> store <span class="keyword">from</span> <span class="string">'../store/index.js'</span>;</span><br><span class="line"></span><br><span class="line">store.events.subscribe(<span class="string">'stateChange'</span>, (params) =&gt; &#123;</span><br><span class="line">  <span class="keyword">this</span>.setData(&#123;</span><br><span class="line">    bookList: params.bookList</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>发布（首页）<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> store <span class="keyword">from</span> <span class="string">'../store/index.js'</span>;</span><br><span class="line">store.dispatch(<span class="string">'addBook'</span>,&#123;<span class="attr">bookid</span>: <span class="number">203</span>&#125;);</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pub-Sub模式（发布-订阅模式）"><span class="toc-text">Pub/Sub模式（发布/订阅模式）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#事件中心（pubsub-js）"><span class="toc-text">事件中心（pubsub.js）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store对象（store-js）"><span class="toc-text">Store对象（store.js）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#案例（状态管理的应用）"><span class="toc-text">案例（状态管理的应用）</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/03/01/Pre-Commit/" rel="next" title="Pre Commit">
+          Pre Commit
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+    </div>
+
+    
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>
