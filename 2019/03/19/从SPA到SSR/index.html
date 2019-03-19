@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="SPA,SSR,">
+  
+
+  
+    <meta name="description" content="从单页应用(SPA)到服务器渲染(SSR)">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>从单页应用(SPA)到服务器渲染(SSR) [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        从单页应用(SPA)到服务器渲染(SSR)
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-03-19T09:59:44.000Z">
+        2019-03-19
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SPA/">SPA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSR/">SSR</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h5 id="成也萧何，败也萧何"><a href="#成也萧何，败也萧何" class="headerlink" title="成也萧何，败也萧何"></a>成也萧何，败也萧何</h5><blockquote>
+<p>你为什么要选择SPA？难道就因为交互体验比传统多页更友好嘛？是的，你说的没错。对于用户来讲，响应时间、交互体验更加友善，对于开发者来说，前后端分离的开发模式大大降低了开发成本，这已经完全可以构成放弃SSR的理由了。</p>
+</blockquote>
+<blockquote>
+<p>如果一切顺利，本文就没有出现的必要了。你猜的没错，我要说但是了！但是，SPA有一个致命的缺陷，就是对搜索引擎不友好，不利于爬虫爬取数据。有人要问了，不利于爬虫不是好事嘛？难道你还想让别人爬你的数据嘛？你咋不上天呢？搜索引擎不爬虫鬼知道你的网站是什么，你靠什么做SEO？靠砸钱嘛？好像也可以..</p>
+</blockquote>
+<blockquote>
+<p>用户就是爸爸，如果你拥有大量的用户，哪怕你像拼多多一样还亏着十几个亿，也照样可以申请上市！得用户者得天下！如果你不愿意花大价钱去做SEO，那么还是老老实实地想想怎么优化你的SPA吧。</p>
+</blockquote>
+<blockquote>
+<p>那么什么对搜索引擎和爬虫友好呢？答案就是静态页面，而非浏览器渲染，这就需要服务器直接渲染，也就是所谓的SSR（Server Side Render）</p>
+</blockquote>
+<a id="more"></a>
+<h5 id="壮士，干了这一杯SSR"><a href="#壮士，干了这一杯SSR" class="headerlink" title="壮士，干了这一杯SSR"></a>壮士，干了这一杯SSR</h5><blockquote>
+<p>SSR，服务器渲染，简单来说就是将每个要展示的页面运行完成后，将整个相应流传送给浏览器，所有的运算都在服务器端完成，浏览器只需要无脑解析HTMl就行。传统的SSR包含哪些？ASP？EJS？JSP？请不要再说了，我想我会永远记得被模板语言支配的恐惧。当用模板语言作为前端开发语言时，至少我是没办法静下心来去美化页面优化交互体验的，所有的精力都花在了业务逻辑上，对于页面的布局毫不关心，如果一定要用一个标准去衡量，那就是，能看就行。</p>
+</blockquote>
+<blockquote>
+<p>那么到底该如何着手将项目改造成SSR呢？我可不想继续写恐怖的模板语言。Vue2.0中有一章是关于SSR的，可以在无须大幅修改原先代码的情况下做到SSR，又不失单页应用良好的体验。听上去是不是很酷，我们来看看怎么实现吧。</p>
+</blockquote>
+<h4 id="SSR架构"><a href="#SSR架构" class="headerlink" title="SSR架构"></a>SSR架构</h4><blockquote>
+<p>一个普通的单页应用通常通过webpack把源代码打包后插入到html中，当页面请求时，返回html再加载打包后的js文件，也就是下图的Application Code、Webpack build和browser三个部分。</p>
+</blockquote>
+<blockquote>
+<p>SSR架构图简介：将 Source（源码）通过 webpack 打包出两个 bundle，其中 Server Bundle 是给服务端用的，服务端通过渲染器 bundleRenderer 将 bundle 生成 html 给浏览器用；另一个 Client Bundle 是给浏览器用的，别忘了服务端只是生成前期首屏页面所需的 html ，后期的交互和数据处理还是需要能支持浏览器脚本的 Client Bundle 来完成。</p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/1258730-2dd1e633362c3cd5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"></p>
+<h5 id="server-entry-amp-client-entry"><a href="#server-entry-amp-client-entry" class="headerlink" title="server entry &amp; client entry"></a>server entry &amp; client entry</h5><blockquote>
+<p>Server entry 和 Client entry对应的是webpack.config中的entry，即打包入口文件，也就是分别代表服务器端所运行代码的入口和浏览器端所运行代码的入口文件。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">server entry: 根据路由状态，返回渲染完成后相应的组件</span><br><span class="line">client entry: 将应用直接挂在到DOM上</span><br></pre></td></tr></table></figure>
+<h5 id="Webpack-build"><a href="#Webpack-build" class="headerlink" title="Webpack build"></a>Webpack build</h5><blockquote>
+<p>既然有了不同的entry，打包自然也就需要两套配置。client端的配置文件本来就有，也并不需要修改。唯一需要增加的，就是server端的配置文件。而server端的配置文件，也可以照抄客户端的配置，改改entry和output就可以了。但是一定要注意，把target属性设置为node。收工完成，得到了server bundle和client bundle。</p>
+</blockquote>
+<h5 id="bundle-renderer"><a href="#bundle-renderer" class="headerlink" title="bundle renderer"></a>bundle renderer</h5><blockquote>
+<p>到这里需要用到vue为支持ssr所依赖的库：vue-server-renderer。通过vue-server-renderer提供的api很容易地根据url生成对应的目录树，然后将它返回给客户端。因为用的是webpack，所以只能用createBundleRenderer而不能用createRenderer来创建randerer。</p>
+</blockquote>
+<h5 id="老师，我要看DEMO"><a href="#老师，我要看DEMO" class="headerlink" title="老师，我要看DEMO"></a>老师，我要看DEMO</h5><blockquote>
+<p>DEMO Time：<a href="https://juejin.im/post/5a9ca40b6fb9a028b77a4aac" target="_blank" rel="noopener">https://juejin.im/post/5a9ca40b6fb9a028b77a4aac</a></p>
+</blockquote>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#成也萧何，败也萧何"><span class="toc-text">成也萧何，败也萧何</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#壮士，干了这一杯SSR"><span class="toc-text">壮士，干了这一杯SSR</span></a></li></ol><li class="toc-item toc-level-4"><a class="toc-link" href="#SSR架构"><span class="toc-text">SSR架构</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#server-entry-amp-client-entry"><span class="toc-text">server entry &amp; client entry</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Webpack-build"><span class="toc-text">Webpack build</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#bundle-renderer"><span class="toc-text">bundle renderer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#老师，我要看DEMO"><span class="toc-text">老师，我要看DEMO</span></a></li></ol>
+  </li></div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/03/19/Resultful风格接口/" rel="next" title="Resultful风格接口">
+          Resultful风格接口
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+    </div>
+
+    
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>

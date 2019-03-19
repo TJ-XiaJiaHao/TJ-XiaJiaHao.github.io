@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Resultful,">
+  
+
+  
+    <meta name="description" content="Resultful风格接口">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>Resultful风格接口 [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Resultful风格接口
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-03-19T09:50:17.000Z">
+        2019-03-19
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Resultful/">Resultful</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h5 id="你脑壳疼嘛？"><a href="#你脑壳疼嘛？" class="headerlink" title="你脑壳疼嘛？"></a>你脑壳疼嘛？</h5><blockquote>
+<p>还在为剪不断理还乱的模板语言头疼？还在为前后端傻傻分不清而烦恼？前端分离了解一下，MVVM框架了解一下，如果你的产品是面向用户的，是希望被用户喜欢的，相信我，你不适合SSR（服务器端渲染）。随着网络应用程序复杂度的极速增长，前后端分离的设计方式也变得越来越流行。</p>
+</blockquote>
+<a id="more"></a>
+<h5 id="你真的懂前端么？"><a href="#你真的懂前端么？" class="headerlink" title="你真的懂前端么？"></a>你真的懂前端么？</h5><blockquote>
+<p>如果你的前端仅仅停留在网页，对不起，请回炉重造。前端包含各种型号各种系统的手机、平板、网页等其他设计。那么问题来了，不同的系统，不同的实现语言，后端要怎么做才能更好地去对接不同的调用方式？这就是API结构产生的背景，其中Restful API是目前比较成熟的一套互联网应用程序的API设计理论。</p>
+</blockquote>
+<h5 id="麻子是Restful风格"><a href="#麻子是Restful风格" class="headerlink" title="麻子是Restful风格"></a>麻子是Restful风格</h5><blockquote>
+<p>既然叫Restful风格，那么它肯定是一种风格，而不是一个标准，它只提供了一种设计原则和约束条件。主要适用于客户端和服务器端交互的软件。是基于http协议实现的。目的是为了提高系统的可伸缩性，降低应用之间的耦合度，方便框架分布式处理程序。基于这个风格的软件可以更加简单、更有层次、更易于实现缓存的机制。</p>
+</blockquote>
+<h5 id="Restful风格的特点"><a href="#Restful风格的特点" class="headerlink" title="Restful风格的特点"></a>Restful风格的特点</h5><p>说了那么多废话，是时候来点干货了，相信大部分人只想知道Restful到底要怎么去设计，关于它是什么，它怎么来了，我只想说，关我*事？</p>
+<ol>
+<li><p>每种url代表了一种资源</p>
+</li>
+<li><p>客户端和服务器之间，传递这个资源的某种表现层</p>
+</li>
+<li><p>客户端通过四个http动词，对服务器资源进行操作。实现表现层状态的转化</p>
+</li>
+</ol>
+<blockquote>
+<p>什么意思？这都不明白？就是每种url代表了一种资源啊。什么是资源？用户信息就是一种资源！书籍信息就是资源！消息就是一种资源！Restful风格指明对一种资源的增删改查操作的请求路径应该是一致的，不同的操作应该以请求方式区分，如新增为POST，删除为DELETE，修改为PUT，查询为GET。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST    /user           <span class="comment">// 创建一个新用户</span></span><br><span class="line">PUT     /user           <span class="comment">// 修改一个用户的信息</span></span><br><span class="line">DELETE  /user           <span class="comment">// 删除一个用户</span></span><br><span class="line">GET     /user           <span class="comment">// 获取一个用户的详细信息</span></span><br></pre></td></tr></table></figure>
+<p>补充：我想大多数人跟我一样在一开始设计API的时候，都喜欢加上一些动词，如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下面的接口不符合Restful设计风格！！！！！虽然它们并没有错</span></span><br><span class="line">POST    /createUser</span><br><span class="line">POST    /updateUser</span><br><span class="line">DELETE  /deleteUser</span><br><span class="line">GET     /getUserInfo</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#你脑壳疼嘛？"><span class="toc-text">你脑壳疼嘛？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#你真的懂前端么？"><span class="toc-text">你真的懂前端么？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#麻子是Restful风格"><span class="toc-text">麻子是Restful风格</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Restful风格的特点"><span class="toc-text">Restful风格的特点</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/03/15/Javascript Object方法大全/" rel="next" title="Javascript Object 常用方法大全">
+          Javascript Object 常用方法大全
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/03/19/从SPA到SSR/" rel="prev" title="从单页应用(SPA)到服务器渲染(SSR)">
+            从单页应用(SPA)到服务器渲染(SSR)
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+
+      <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+    </div>
+
+    
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>

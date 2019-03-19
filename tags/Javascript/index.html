@@ -81,7 +81,8 @@
     </div>
 
     <!--<div class="excerpt">-->
-      <!--<p>搜罗了目前 <code>Javascript</code> 数组所有的方法，迷失道路的小伙伴可以直接查看页面右边的目录<br>-->
+      <!--<p>搜罗了目前 <code>Javascript</code> 数组所有的方法，迷失道路的小伙伴可以直接查看页面右边的目录</p>
+<h4 id="数组创建"><a href="#数组创建" class="headerlink" title="数组创建"></a>数组创建</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]; <span class="comment">// [1, 2, 3]</span></span><br><span class="line"><span class="keyword">const</span> arr2 = <span class="built_in">Array</span>(); <span class="comment">// []</span></span><br><span class="line"><span class="keyword">const</span> arr3 = <span class="built_in">Array</span>(<span class="number">2</span>); <span class="comment">// [undefined, undefined]</span></span><br><span class="line"><span class="keyword">const</span> arr4 = <span class="built_in">Array</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);  <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>-->
     <!--</div>-->
   </a>
 
@@ -120,7 +121,9 @@
     </div>
 
     <!--<div class="excerpt">-->
-      <!--<p>本文将手把手逐渐实现一个简化版的 <code>JQuery</code>。</p>-->
+      <!--<p>本文将手把手逐渐实现一个简化版的 <code>JQuery</code>。</p>
+<h3 id="先来自己动手简化选择器"><a href="#先来自己动手简化选择器" class="headerlink" title="先来自己动手简化选择器"></a>先来自己动手简化选择器</h3><p><code>base</code> 是一个对象，拥有两个方法，方法名为 <code>$</code>、<code>$$</code>，功能分别为通过 <code>id</code> 和 <code>class</code> 来获取元素。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> base = &#123;</span><br><span class="line">    $:<span class="function"><span class="keyword">function</span>(<span class="params">id</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span><br><span class="line">    &#125;,</span><br><span class="line">    $$:<span class="function"><span class="keyword">function</span>(<span class="params">className</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementsByClassName(className);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line">base.$(<span class="string">"id"</span>);       <span class="comment">//返回相应的元素对象</span></span><br><span class="line">base.$$(<span class="string">"class"</span>);   <span class="comment">//返回相应的元素对象集合</span></span><br></pre></td></tr></table></figure>-->
     <!--</div>-->
   </a>
 
