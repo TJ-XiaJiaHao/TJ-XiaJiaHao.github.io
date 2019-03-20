@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="微信小程序,">
+  
+
+  
+    <meta name="description" content="微信小程序打夯之旅(一)：登录流程">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>微信小程序打夯之旅(一)：登录流程 [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        微信小程序打夯之旅(一)：登录流程
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-03-20T07:41:07.000Z">
+        2019-03-20
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微信小程序/">微信小程序</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h3 id="基础术语"><a href="#基础术语" class="headerlink" title="基础术语"></a>基础术语</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. code: 调用wx.login后返回的临时登录凭证，可请求微信服务器换取openId和session_key</span><br><span class="line">2. openId：用户唯一标识，同一用户在不同的应用中不一致</span><br><span class="line">3. session_key：对用户数据进行加密签名的密钥</span><br><span class="line">4. appId：小程序唯一标识，申请小程序成功后获得分配</span><br><span class="line">5. unionId：用户在开放平台的唯一标识符，同一用户在同一账号下的所有应用中一致</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="UnionID-机制说明"><a href="#UnionID-机制说明" class="headerlink" title="UnionID 机制说明"></a>UnionID 机制说明</h3><blockquote>
+<p>如果开发者拥有多个移动应用、网站应用、和公众帐号（包括小程序），可通过unionid来区分用户的唯一性，因为只要是同一个微信开放平台帐号下的移动应用、网站应用和公众帐号（包括小程序），用户的unionid是唯一的。换句话说，同一用户，对同一个微信开放平台下的不同应用，unionid是相同的。</p>
+</blockquote>
+<h3 id="UnionID获取途径"><a href="#UnionID获取途径" class="headerlink" title="UnionID获取途径"></a>UnionID获取途径</h3><p><code>UnionID</code> 获取途径：绑定了开发者帐号的小程序，可以通过下面的途径获取 <code>UnionID</code>。</p>
+<ul>
+<li><p>调用接口 <code>wx.getUserInfo</code>，从解密数据中获取 <code>UnionID</code>。注意本接口需要用户授权，请开发者妥善处理用户拒绝授权后的情况。</p>
+</li>
+<li><p>如果开发者帐号下存在同主体的公众号，并且该用户已经关注了该公众号。开发者可以直接通过 <code>wx.login</code> + <code>code2Session</code> 获取到该用户 <code>UnionID</code>，无须用户再次授权。</p>
+</li>
+<li><p>如果开发者帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用。开发者也可以直接通过<code>wx.login</code> + <code>code2Session</code> 获取到该用户 <code>UnionID</code>，无须用户再次授权。</p>
+</li>
+<li><p>用户在小程序（暂不支持小游戏）中支付完成后，开发者可以直接通过 <code>getPaidUnionId</code> 接口获取该用户的  <code>UnionID</code>，无需用户授权。注意：本接口仅在用户支付完成后的5分钟内有效，请开发者妥善处理。</p>
+</li>
+<li><p>小程序端调用云函数时，如果开发者帐号下存在同主体的公众号，并且该用户已经关注了该公众号，可在云函数中通过 <code>cloud.getWXContext</code> 获取 <code>UnionID</code>。</p>
+</li>
+<li><p>小程序端调用云函数时，如果开发者帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用，也可在云函数中通过 <code>cloud.getWXContext</code> 获取 <code>UnionID</code>。</p>
+</li>
+</ul>
+<h3 id="小程序登录流程示意图"><a href="#小程序登录流程示意图" class="headerlink" title="小程序登录流程示意图"></a>小程序登录流程示意图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 通过wx.login() 获取code</span><br><span class="line">2. 将code发送给后端，后端请求微信服务器code2Session接口换取openId和sessionKey</span><br><span class="line">3. 将openId与唯一登录态绑定并把登录态返回给用户</span><br></pre></td></tr></table></figure>
+<p><img src="https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/image/api-login.jpg?t=19032014" alt="image"></p>
+<h3 id="需要授权的信息"><a href="#需要授权的信息" class="headerlink" title="需要授权的信息"></a>需要授权的信息</h3><p>部分接口需要经过用户授权同意才能调用，如用户信息、地理位置、地址等等，需要注意的是，如果用户已经拒绝了授权，就不会再出现授权弹窗，此时应该引导用户前往设置界面打开授权，开发者可以调用 <code>wx.openSetting</code> 打开设置界面，引导用户开启授权。</p>
+<p><strong>提前发起授权</strong></p>
+<p>除了 <code>userInfo</code>，其他的授权信息都可以使用 <code>wx.authorize</code> 提前发起授权，而 <code>userInfo</code> 只能通过 <code>button</code> 触发。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 点击后将出发弹窗，点击允许或拒绝将调用回调</span></span><br><span class="line">&lt;button open-type=<span class="string">"getUserInfo"</span> bindgetuserinfo=<span class="string">"getUserInfo"</span>&gt;</span><br><span class="line"></span><br><span class="line">getUserInfo(e) &#123;</span><br><span class="line">  <span class="comment">// 用户拒绝授权</span></span><br><span class="line">  <span class="keyword">if</span> (e.detail.errMsg == <span class="string">'getUserInfo:fail auth deny'</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>.showError(<span class="string">'您还没有授权微信登录'</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 获取用户信息成功</span></span><br><span class="line">    <span class="keyword">this</span>.weixinLoginNew();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>e.detail</code> 数据结构说明(跳过吧)</p>
+<ul>
+<li>encryptedData: 加密后的用户敏感信息，如openId和unionId</li>
+<li>iv：加密算法的初始向量，后端通过iv、encryptedData及解密算法进行解密获得openId</li>
+<li>signature：数据签名，signature = sha1( rawData + session_key )，开发者将 signature、rawData 发送到开发者服务器进行校验。服务器利用用户对应的 session_key 使用相同的算法计算出签名 signature2 ，比对 signature 与 signature2 即可校验数据的完整性。</li>
+<li>userInfo：用户非敏感信息，包含头像、昵称、性别等</li>
+</ul>
+<p><strong>需要授权的信息列表</strong></p>
+<table>
+<thead>
+<tr>
+<th>scope</th>
+<th>对应接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope.userInfo</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.getUserInfo.html" target="_blank" rel="noopener">wx.getUserInfo</a></td>
+<td>用户信息</td>
+</tr>
+<tr>
+<td>scope.userLocation</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.getLocation.html" target="_blank" rel="noopener">wx.getLocation</a>, <a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseLocation.html" target="_blank" rel="noopener">wx.chooseLocation</a></td>
+<td>地理位置</td>
+</tr>
+<tr>
+<td>scope.address</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseAddress.html" target="_blank" rel="noopener">wx.chooseAddress</a></td>
+<td>通讯地址</td>
+</tr>
+<tr>
+<td>scope.invoiceTitle</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseInvoiceTitle.html" target="_blank" rel="noopener">wx.chooseInvoiceTitle</a></td>
+<td>发票抬头</td>
+</tr>
+<tr>
+<td>scope.invoice</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.chooseInvoice.html" target="_blank" rel="noopener">wx.chooseInvoice</a></td>
+<td>获取发票</td>
+</tr>
+<tr>
+<td>scope.werun</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.getWeRunData.html" target="_blank" rel="noopener">wx.getWeRunData</a></td>
+<td>微信运动步数</td>
+</tr>
+<tr>
+<td>scope.record</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.startRecord.html" target="_blank" rel="noopener">wx.startRecord</a></td>
+<td>录音功能</td>
+</tr>
+<tr>
+<td>scope.writePhotosAlbum</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.saveImageToPhotosAlbum.html" target="_blank" rel="noopener">wx.saveImageToPhotosAlbum</a>, <a href="https://developers.weixin.qq.com/miniprogram/dev/api/wx.saveVideoToPhotosAlbum.html" target="_blank" rel="noopener">wx.saveVideoToPhotosAlbum</a></td>
+<td>保存到相册</td>
+</tr>
+<tr>
+<td>scope.camera</td>
+<td><a href="https://developers.weixin.qq.com/miniprogram/dev/component/camera.html" target="_blank" rel="noopener"><code>&lt;camera /&gt;</code></a>组件</td>
+<td>摄像头</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获取手机号"><a href="#获取手机号" class="headerlink" title="获取手机号"></a>获取手机号</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;button open-type=<span class="string">"getPhoneNumber"</span> bindgetphonenumber=<span class="string">"getPhoneNumber"</span>&gt;&lt;/button&gt;</span><br><span class="line"></span><br><span class="line">Page(&#123;</span><br><span class="line">  getPhoneNumber(e) &#123;</span><br><span class="line">    <span class="comment">// 揭秘后JSON结构：&#123;phoneNumber(有区号), purePhoneNumber, countryCode &#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(e.detail.encryptedData)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="案例（封装了一个微信登录组件）"><a href="#案例（封装了一个微信登录组件）" class="headerlink" title="案例（封装了一个微信登录组件）"></a>案例（封装了一个微信登录组件）</h3><p><strong>1. 查看用户设置信息验证是否授权过</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ready() &#123;</span><br><span class="line">  wx.getSetting(&#123;</span><br><span class="line">    success: <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (res.authSetting[<span class="string">'scope.userInfo'</span>]) &#123;</span><br><span class="line">        <span class="comment">// 已经授权，可以直接调用 wx.getUserInfo 获取头像昵称</span></span><br><span class="line">        <span class="keyword">this</span>.setData(&#123; <span class="attr">isAuthorization</span> : <span class="literal">true</span>&#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2. 页面结构</strong><br>如果已经授权过，则可以直接调用 <code>wx.getUserInfo</code> 无需按钮授权，<code>slot</code> 中可以放置任何元素，用以描述登录按钮。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"login-wrap"</span> <span class="attr">catchtap</span>=<span class="string">"weixinLogin"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">wx:if</span>=<span class="string">"&#123;&#123; !isAuthorization &#125;&#125;"</span> <span class="attr">open-type</span>=<span class="string">"getUserInfo"</span> <span class="attr">bindgetuserinfo</span>=<span class="string">"getUserInfo"</span> <span class="attr">class</span>=<span class="string">"wx-btn"</span> <span class="attr">size</span>=<span class="string">"min"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数据</span></span><br><span class="line">data: &#123;</span><br><span class="line">  isAuthorization: <span class="literal">false</span>,     <span class="comment">// 是否已经验证过</span></span><br><span class="line">  canIUse: wx.canIUse(<span class="string">'button.open-type.getUserInfo'</span>),</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 样式 */</span></span><br><span class="line">&lt;style lang="scss"&gt;</span><br><span class="line"><span class="selector-class">.login-wrap</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.wx-btn</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>rpx;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>rpx;</span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">100</span>;</span><br><span class="line">  <span class="attribute">border-radius</span>:<span class="number">0</span>rpx;</span><br><span class="line">  <span class="attribute">background</span>:none;</span><br><span class="line">  <span class="attribute">margin</span>:<span class="number">0</span>rpx;</span><br><span class="line">  <span class="attribute">padding</span>:<span class="number">0</span>rpx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.wx-btn</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">  <span class="attribute">border</span>: none;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>3.处理点击行为</strong><br>如果用户已经授权，则会触发 <code>weixinLogin</code> 事件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">weixinLogin (e) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>.data.isAuthorization) <span class="keyword">return</span>;</span><br><span class="line">  <span class="comment">// 通过 wx.login() 完成微信登录</span></span><br><span class="line">  <span class="comment">// 通过 wx.getUserInfo() 获取用户信息</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>如果用户未授权过，则会触发 <code>getUserInfo</code> 事件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 微信登录按钮触发getUserInfo</span></span><br><span class="line">getUserInfo(e) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>.data.canIUse)&#123;</span><br><span class="line">    <span class="keyword">this</span>.showError(<span class="string">'请升级微信到最新版本'</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (e.detail.errMsg == <span class="string">'getUserInfo:fail auth deny'</span>)&#123;</span><br><span class="line">    <span class="keyword">this</span>.showError(<span class="string">'您还没有授权微信登录'</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">    wx.showLoading(&#123; <span class="attr">title</span>: <span class="string">'loading'</span>, <span class="attr">mask</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">    <span class="comment">// 通过 wx.login() 完成微信登录</span></span><br><span class="line">    <span class="comment">// 通过 wx.getUserInfo() 获取用户信息</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#基础术语"><span class="toc-text">基础术语</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UnionID-机制说明"><span class="toc-text">UnionID 机制说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UnionID获取途径"><span class="toc-text">UnionID获取途径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小程序登录流程示意图"><span class="toc-text">小程序登录流程示意图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#需要授权的信息"><span class="toc-text">需要授权的信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取手机号"><span class="toc-text">获取手机号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#案例（封装了一个微信登录组件）"><span class="toc-text">案例（封装了一个微信登录组件）</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/03/19/从SPA到SSR/" rel="next" title="从单页应用(SPA)到服务器渲染(SSR)">
+          从单页应用(SPA)到服务器渲染(SSR)
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/03/20/微信小程序Cookie模拟/" rel="prev" title="微信小程序打夯之旅(二)：Cookie模拟">
+            微信小程序打夯之旅(二)：Cookie模拟
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+
+    </div>
+
+    
+    <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>
