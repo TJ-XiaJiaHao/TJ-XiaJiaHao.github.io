@@ -835,6 +835,10 @@ body {
   border-radius: 50%;
   border: 2px solid #fff;
 }
+.archives .archive .index-tag-list {
+  display: inline;
+  padding: 0;
+}
 .archives .archive .title {
   margin: 0;
   font-weight: normal;

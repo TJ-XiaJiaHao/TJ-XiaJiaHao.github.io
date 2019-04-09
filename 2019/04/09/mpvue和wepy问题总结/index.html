@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="微信小程序,">
+  
+
+  
+    <meta name="description" content="微信小程序打夯之旅(八)：mpvue和wepy问题总结">
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>微信小程序打夯之旅(八)：mpvue和wepy问题总结 [ 复制粘贴工程师 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://wx.qlogo.cn/mmopen/vi_32/AMpRacDgkTPogKk4gQ5IC3QezP55XoPpicQpnD9Vz3eNz6OPFYyFrFzCa4EGQGH65kPia5YJwQBBvvJpVwQ4lfVg/132">
+    <span class="title">复制粘贴工程师</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
+          
+      
+  </ul>
+
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        微信小程序打夯之旅(八)：mpvue和wepy问题总结
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2019-04-09T07:38:36.000Z">
+        2019-04-09
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微信小程序/">微信小程序</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h4 id="mpvue-问题总结-2018-03-28"><a href="#mpvue-问题总结-2018-03-28" class="headerlink" title="mpvue 问题总结 - 2018.03.28"></a>mpvue 问题总结 - 2018.03.28</h4><p><a href="https://github.com/Meituan-Dianping/mpvue/issues/316" target="_blank" rel="noopener"><code>#issue地址</code></a></p>
+<ol>
+<li><code>{</code> <code>{</code> <code>}</code> <code>}</code> 中不支持复杂的 <code>js</code> 语法，因为 <code>mpvue</code> 会把 <code>{</code> <code>{</code> <code>}</code> <code>}</code> 中的内容直接编译到 <code>wxml</code> 中，受限于微信小程序的能力。</li>
+<li><p>不支持复杂 <code>slot</code>，具名 <code>slot</code> 和单个 <code>slot</code> 插槽可以支持，但是 <code>slot</code> 的 <code>scoped</code> 不支持，即下面的情况无法获取 <code>item</code> 和 <code>index</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;component v-for=&quot;item in todos&quot; :key=&quot;item&quot;&gt;</span><br><span class="line">    &#123;&#123; item &#125;&#125;  /* 获取不到 */</span><br><span class="line">&lt;/component&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>组件渲染是串行的，而原生的是并行的。假设一个页面中用到了5个A组件，一个组件渲染时间大约为100毫秒，那么在原生中所有组件渲染完成约为100毫秒（并行渲染），而在mpvue中则需要约为500毫秒（串行渲染）。</p>
+</li>
+<li><p>当动态绑定一个数据时，某些情况下即使该数据没有发生变化，也会被刷新。如下面是一个简单的 <code>slider</code>，想要在拖动的时候实时修改标题，但是会不断地重新赋值为 <code>chapterIndex</code> 的值，就会出现回弹的 <code>bug</code> ，而且松手后的 <code>value</code> 不是最新的 <code>value</code>，而是 <code>chapterIndex</code>（下面注释部分为解决方案）。<code>scroll-view</code> 如果动态绑定 <code>scrolltop</code> 也有同样的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 假设现在chapterIndex为0，slider最大为10</span><br><span class="line">&lt;slider :value=&quot;chapterIndex&quot;</span><br><span class="line">          @changing=&quot;sliderChooseChaptering&quot;</span><br><span class="line">          @change=&quot;sliderChooseChaptered&quot;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 拖动slider到5处</span><br><span class="line">sliderChooseChaptering(e) &#123;</span><br><span class="line">    // this.chapterIndex = undefined;       // 通过设置为undefined可以避免滚动条回退</span><br><span class="line">    this.toolbarTitle = &apos;new title&apos;;      // 改动了标题变量，但是slider会被重新赋值，小圆点回退到0处</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line">sliderChooseChaptered(e) &#123;</span><br><span class="line">    let chapterIndex = e.mp.detail.value;</span><br><span class="line">    console.log(chapterIndex);            // 值为0，而不是5</span><br><span class="line">    // this.chapterIndex = chapterIndex;    // 重新赋值</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上传体验版的时候，访问路径为 <code>pages/***/main</code>，如 <code>pages/index/main</code></p>
+</li>
+<li><p>图片 <code>url</code> 不能使用相对路径， 否则在手机上将显示不出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;image :src = &apos;imgUrl&apos;&gt;&lt;/image&gt;</span><br><span class="line"></span><br><span class="line">imgUrl() &#123;</span><br><span class="line">    return &apos;../../static/images/test.png&apos;;  // 错误方法</span><br><span class="line">    return &apos;/static/images/test.png&apos;;   // 正确方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>scroll-view</code> 中无法监听到垂直的 <code>touchmove</code> (原生的也有同样的问题)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> &lt;scroll-view style=&quot;height:100rpx&quot; scroll-y @touchstart=&quot;tstart&quot; @touchend=&quot;tend&quot; @touchmove=&quot;tmove&quot;&gt;&lt;div style=&quot;height: 200rpx&quot;&gt;hahahah&lt;/div&gt;&lt;/scroll-view&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">tstart() &#123;</span><br><span class="line">  console.log(&apos;tstart&apos;);</span><br><span class="line">&#125;,</span><br><span class="line">tend() &#123;</span><br><span class="line">  console.log(&apos;tend&apos;);</span><br><span class="line">&#125;,</span><br><span class="line">tmove() &#123;</span><br><span class="line">  console.log(&apos;tmove&apos;);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="wepy-问题总结-2018-03-12"><a href="#wepy-问题总结-2018-03-12" class="headerlink" title="wepy 问题总结 - 2018-03-12"></a>wepy 问题总结 - 2018-03-12</h4><ol>
+<li>组件动态绑定只能绑定一层，如 <code>:nickName.sync=&quot;nickName&quot;</code>，当父组件的 <code>nickName</code> 改变时，子组件中的数据没有刷新</li>
+<li>1.7.2中可以使用原生组件解决了组件共享数据的问题，但是父组件无法再通过 <code>$broadcast</code> 下传事件了</li>
+<li>当使用 <code>image</code> 时可能会导致体验 <code>bug</code> ，出现场景：侧滑组件分上下两层，上层含有 <code>image</code> 标签，当快速加载多个侧滑组件时，会出现下层按钮闪现的情况（百来毫秒），降低体验感</li>
+<li>没有数据共享？？</li>
+<li>组件循环渲染一定要用repeat，而repeat本身充满了bug，真的让人头疼 <a href="https://github.com/Tencent/wepy/issues/895" target="_blank" rel="noopener"><code>#issue</code></a></li>
+</ol>
+<h4 id="mpvue相对于wepy的优势"><a href="#mpvue相对于wepy的优势" class="headerlink" title="mpvue相对于wepy的优势"></a>mpvue相对于wepy的优势</h4><ol>
+<li><code>mpvue</code> 组件化开发能力更强，<code>wepy</code> 组件化支持仍有很多不足，其中组件数据共享的问题简直鸡肋。虽然在1.7.2之后可以使用原生的组件从而达到数据隔离的目的，但是原生语法和 <code>wepy</code> 语法很容易发生混淆。如果要循环渲染组件，则一定要用到 <code>repeat</code> 标签，而 <code>repeat</code> 标签本身充满着 <code>bug</code>。</li>
+<li>mpvue支持 <code>vuex</code>，<code>wepy</code> 开发过程中多页面间共享的数据很难维护，只能用 <code>globaldata</code> 或者 <code>storage</code> 来达到数据共享效果。</li>
+<li>语法和特性与 <code>vue</code> 更加类似，<code>wepy</code> 只是借鉴了 <code>vue</code>，本身和 <code>vue</code> 还是有较大差别的。</li>
+</ol>
+<h4 id="mpvue相对于wepy的劣势"><a href="#mpvue相对于wepy的劣势" class="headerlink" title="mpvue相对于wepy的劣势"></a>mpvue相对于wepy的劣势</h4><ol>
+<li>和wepy一样，<code>{</code> <code>{</code> <code>}</code> <code>}</code> 中不支持复杂的js语法，因为 <code>mpvue</code> 会把 <code>{</code> <code>{</code> <code>}</code> <code>}</code>中的内容直接编译到 <code>wxml</code> 中，受限于微信小程序的能力。</li>
+<li><p>不支持复杂 <code>slot</code>，具名 <code>slot</code> 和单个 <code>slot</code> 插槽可以支持，但是 <code>slot</code> 的 <code>scoped</code> 不支持，即下面的情况无法获取 <code>item</code> 和 <code>index</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;component v-for=&quot;item in todos&quot; :key=&quot;item&quot;&gt;</span><br><span class="line">    &#123;&#123; item &#125;&#125;  /* 获取不到 */</span><br><span class="line">&lt;/component&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>组件中不支持transition，动画可能要跪</p>
+</li>
+</ol>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#mpvue-问题总结-2018-03-28"><span class="toc-text">mpvue 问题总结 - 2018.03.28</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wepy-问题总结-2018-03-12"><span class="toc-text">wepy 问题总结 - 2018-03-12</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mpvue相对于wepy的优势"><span class="toc-text">mpvue相对于wepy的优势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mpvue相对于wepy的劣势"><span class="toc-text">mpvue相对于wepy的劣势</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+  <!-- <img src="https://kevinofneu-blog-static.oss-cn-beijing.aliyuncs.com/static/2018-12-10-qrcode_for_gh_ffacf5722095_258.jpg" alt="Running Geek" style="margin: auto; display: block;"/>
+
+  <div style="margin: auto; text-align: center; font-size: 0.8em; color: grey;">老铁们关注走一走，不迷路</div> -->
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2019/03/28/微信小程序组件内容槽/" rel="next" title="微信小程序打夯之旅(七)：组件支持多个内容槽(slot)">
+          微信小程序打夯之旅(七)：组件支持多个内容槽(slot)
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+
+    </div>
+
+    
+    <div id="vcomments" style="max-width: 800px; margin: 16px auto;"></div>
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">首页</a> |
+        <a class="bottom-item" href="https://github.com/TJ-XiaJiaHao" target="_blank">GitHub</a> |
+        <a class="bottom-item">联系邮箱：1452806@tongji.edu.cn</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments',
+    appId: '8CwYqXS8IoFbvaA9PmgqGjTf-gzGzoHsz',
+    appKey: 'z5bVoSPDPhd8hzlXvDey5Hpz',
+    verify:false,
+    placeholder: '评论留言'
+  })
+</script>
+</html>
