@@ -45,6 +45,14 @@
             <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
           
       
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
   </ul>
 
 </nav>
@@ -68,15 +76,15 @@
   
   <div class="archive">
   <a class="post-go" href="/2019/02/28/Javascript代码检查那点事/">
-    <div>
+    <div class="post-go-item">
       <span class="date">
         02-28
       </span>
       <span class="slash">/</span>
+      Javascript代码检查那点事
       
         <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/eslint/">eslint</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/eslint-staged/">eslint-staged</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/增量检查/">增量检查</a></li></ul>
       
-      Javascript代码检查那点事
     </div>
 
     <!--<div class="excerpt">-->
@@ -86,6 +94,43 @@
   </a>
 
 </div>
+
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
 
 
   </div></section>

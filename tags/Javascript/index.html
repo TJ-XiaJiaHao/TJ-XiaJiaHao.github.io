@@ -45,6 +45,14 @@
             <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">时间轴</a></li>
           
       
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
   </ul>
 
 </nav>
@@ -67,16 +75,75 @@
       <div class="archives">
   
   <div class="archive">
+  <a class="post-go" href="/2019/03/15/Javascript Object方法大全/">
+    <div class="post-go-item">
+      <span class="date">
+        03-15
+      </span>
+      <span class="slash">/</span>
+      Javascript Object 常用方法大全
+      
+        <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
+      
+    </div>
+
+    <!--<div class="excerpt">-->
+      <!--<h4 id="Object-assign-将所有可枚举属性的值从一个或多个对象复制到目标对象，并返回目标对象"><a href="#Object-assign-将所有可枚举属性的值从一个或多个对象复制到目标对象，并返回目标对象" class="headerlink" title="Object.assign: 将所有可枚举属性的值从一个或多个对象复制到目标对象，并返回目标对象"></a>Object.assign: 将所有可枚举属性的值从一个或多个对象复制到目标对象，并返回目标对象</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj1 = &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">3</span>&#125;</span><br><span class="line"><span class="keyword">const</span> obj2 = &#123; <span class="attr">a</span>: <span class="number">5</span>, <span class="attr">c</span>: <span class="number">6</span>&#125;</span><br><span class="line"><span class="keyword">const</span> obj3 = <span class="built_in">Object</span>.assign(obj1, obj2)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj1) <span class="comment">// &#123; a: 5, b: 3, c: 6&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(obj2) <span class="comment">// &#123; a: 5, c: 6&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(obj3) <span class="comment">// &#123; a: 5, b: 3, c: 6&#125;</span></span><br></pre></td></tr></table></figure>-->
+    <!--</div>-->
+  </a>
+
+</div>
+
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
+
+  
+  
+  <div class="archive">
   <a class="post-go" href="/2019/03/14/Javascript数组方法大全/">
-    <div>
+    <div class="post-go-item">
       <span class="date">
         03-14
       </span>
       <span class="slash">/</span>
+      Javascript数组方法大全
       
         <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
       
-      Javascript数组方法大全
     </div>
 
     <!--<div class="excerpt">-->
@@ -87,19 +154,56 @@
 
 </div>
 
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
+
   
   
   <div class="archive">
   <a class="post-go" href="/2019/02/28/Javascript代码检查那点事/">
-    <div>
+    <div class="post-go-item">
       <span class="date">
         02-28
       </span>
       <span class="slash">/</span>
+      Javascript代码检查那点事
       
         <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/eslint/">eslint</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/eslint-staged/">eslint-staged</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/增量检查/">增量检查</a></li></ul>
       
-      Javascript代码检查那点事
     </div>
 
     <!--<div class="excerpt">-->
@@ -110,19 +214,56 @@
 
 </div>
 
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
+
   
   
   <div class="archive">
   <a class="post-go" href="/2019/02/20/深入理解JQuery原理/">
-    <div>
+    <div class="post-go-item">
       <span class="date">
         02-20
       </span>
       <span class="slash">/</span>
+      深入理解JQuery原理
       
         <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/JQuery/">JQuery</a></li><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
       
-      深入理解JQuery原理
     </div>
 
     <!--<div class="excerpt">-->
@@ -134,19 +275,56 @@
 
 </div>
 
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
+
   
   
   <div class="archive">
   <a class="post-go" href="/2019/02/20/Javascript内存结构分析/">
-    <div>
+    <div class="post-go-item">
       <span class="date">
         02-20
       </span>
       <span class="slash">/</span>
+      Javascript内存结构分析
       
         <ul class="index-tag-list"><li class="index-tag-list-item"><a class="index-tag-list-link" href="/tags/Javascript/">Javascript</a></li></ul>
       
-      Javascript内存结构分析
     </div>
 
     <!--<div class="excerpt">-->
@@ -156,11 +334,59 @@
 
 </div>
 
+<style lang="less">
+@import "variables.less";
+.archive .index-tag-list {
+  font-size: 13px;
+  display: inline;
+  padding: 0;
+}
+.archive .index-tag-list .index-tag-list-item {
+  margin-right: 5px;
+  /*color: #999;*/
+  padding: 2px 5px;
+  /*background-color: #f6f6f6;*/
+  border-radius: 2px;
+  display: inline;
+  list-style: none;
+  /*background: #DDDDDD;*/
+  background: #28a745;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.archive .index-tag-list .index-tag-list-item:hover {
+  background-color: #efefef;
+}
+.post-go-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.archive .slash {
+  color: #000000;
+}
+.archives .archive .date {
+  color: #000000;
+  font-weight: bold;
+}
+</style>
+
 
   </div></section>
 
 <!-- <div class="page tag-page" id="tag">
   <h3 title="Javascript下的文章">Javascript</h3>
+  
+    <div class="tag-item">
+      
+        <a href="/2019/03/15/Javascript Object方法大全/">
+          Javascript Object 常用方法大全
+        </a>
+      
+      <time class="time" datetime="2019-03-15T01:58:27.000Z">
+        2019-03-15
+      </time>
+    </div>
   
     <div class="tag-item">
       
